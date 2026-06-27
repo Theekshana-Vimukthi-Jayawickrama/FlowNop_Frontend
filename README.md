@@ -33,9 +33,10 @@ See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rule
 
 ---
 
-## Deployment (Vercel)
+## Deployment (Netlify)
 
-The frontend is ready for Vercel deployment. A [vercel.json](file:///c:/Users/Vimukthi/.gemini/antigravity-ide/scratch/taskflow/frontend/vercel.json) configuration file is provided to route all path requests to `index.html` (supporting SPA routing) and cache-control headers for static assets.
+The frontend is ready for Netlify deployment. A [netlify.toml](file:///c:/Users/Vimukthi/.gemini/antigravity-ide/scratch/taskflow/frontend/netlify.toml) configuration file is provided to route all path requests to `index.html` (supporting SPA routing) and cache-control headers for static assets.
 
 For full deployment instructions, please see the [Deployment Guide](file:///c:/Users/Vimukthi/.gemini/antigravity-ide/scratch/taskflow/README.md#deployment-guide) in the root repository.
+
 
