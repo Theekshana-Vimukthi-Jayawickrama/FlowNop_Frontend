@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { User, Eye, Users } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import Card from '../ui/Card';
 import StatusBadge from './StatusBadge';
 import PriorityBadge from './PriorityBadge';
 import DueDate from './DueDate';
 import type { ITask } from '../../types/task';
+import { getTask } from '../../api/tasks';
 
 interface TaskCardProps {
   task: ITask;
@@ -14,9 +16,21 @@ interface TaskCardProps {
 
 export const TaskCard: React.FC<TaskCardProps> = ({ task, hideViewDetails = false }) => {
   const { _id, title, description, status, priority, dueDate, assignedTo, subAssignedTo } = task;
+  const queryClient = useQueryClient();
+
+  const handlePrefetch = () => {
+    queryClient.prefetchQuery({
+      queryKey: ['task', _id],
+      queryFn: () => getTask(_id),
+      staleTime: 1000 * 30, // 30 seconds
+    });
+  };
 
   return (
-    <Card className="flex flex-col h-full hover:shadow-md transition-shadow duration-200">
+    <Card 
+      className="flex flex-col h-full hover:shadow-md transition-shadow duration-200"
+      onMouseEnter={handlePrefetch}
+    >
       {/* Badges bar */}
       <div className="flex items-center justify-between mb-3">
         <PriorityBadge priority={priority} />

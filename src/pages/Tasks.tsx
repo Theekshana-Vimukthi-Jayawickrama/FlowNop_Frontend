@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTasks } from '../features/tasks/useTasks';
 import useCreateTask from '../features/tasks/useCreateTask';
+import { getTasks } from '../api/tasks';
 import TaskCard from '../components/tasks/TaskCard';
 import TaskTable from '../components/tasks/TaskTable';
 import TaskViewToggle from '../components/tasks/TaskViewToggle';
@@ -65,6 +67,10 @@ export const Tasks: React.FC = () => {
 
   // Debounce search term to update URL Search Params
   useEffect(() => {
+    if (searchTerm === currentSearch) {
+      return;
+    }
+
     const handler = setTimeout(() => {
       setSearchParams((prev) => {
         const next = new URLSearchParams(prev);
@@ -79,7 +85,7 @@ export const Tasks: React.FC = () => {
     }, 300);
 
     return () => clearTimeout(handler);
-  }, [searchTerm, setSearchParams]);
+  }, [searchTerm, currentSearch, setSearchParams]);
 
   // Query Hook
   const { data, isLoading, isError, error, refetch } = useTasks({
@@ -93,8 +99,38 @@ export const Tasks: React.FC = () => {
     approved: currentApproved,
   });
 
+  const queryClient = useQueryClient();
   const tasks = data?.data || [];
   const meta = data?.meta || { total: 0, page: 1, limit: 10, pages: 1 };
+
+  // Prefetch next and previous pages for instantaneous page navigation
+  useEffect(() => {
+    const nextQueryParams = {
+      search: currentSearch || undefined,
+      status: currentApproved === 'true' ? undefined : (currentStatus || undefined),
+      priority: currentPriority || undefined,
+      assignedTo: isAdmin && currentAssignedTo ? currentAssignedTo : undefined,
+      sort: currentSort,
+      limit,
+      approved: currentApproved,
+    };
+
+    if (currentPage < meta.pages) {
+      queryClient.prefetchQuery({
+        queryKey: ['tasks', { ...nextQueryParams, page: currentPage + 1 }],
+        queryFn: () => getTasks({ ...nextQueryParams, page: currentPage + 1 }),
+        staleTime: 1000 * 30,
+      });
+    }
+
+    if (currentPage > 1) {
+      queryClient.prefetchQuery({
+        queryKey: ['tasks', { ...nextQueryParams, page: currentPage - 1 }],
+        queryFn: () => getTasks({ ...nextQueryParams, page: currentPage - 1 }),
+        staleTime: 1000 * 30,
+      });
+    }
+  }, [currentPage, meta.pages, currentSearch, currentStatus, currentPriority, currentSort, currentAssignedTo, currentApproved, isAdmin, limit, queryClient]);
 
   // Filter handlers
   const handleStatusChange = (statusValue: string) => {

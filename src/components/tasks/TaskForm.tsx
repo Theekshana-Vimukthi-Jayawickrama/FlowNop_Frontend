@@ -141,6 +141,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({
         <Input
           label="Due Date (Optional)"
           type="date"
+          min={formatDate(new Date().toISOString())}
           error={errors.dueDate?.message}
           disabled={isFormDisabled}
           {...register('dueDate')}

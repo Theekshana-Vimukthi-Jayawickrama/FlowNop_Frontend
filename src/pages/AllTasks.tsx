@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAllTasks } from '../features/tasks/useAllTasks';
+import { getAllTasks } from '../api/tasks';
 import TaskCard from '../components/tasks/TaskCard';
 import TaskTable from '../components/tasks/TaskTable';
 import { useAuth } from '../context/AuthContext';
@@ -47,6 +49,10 @@ export const AllTasks: React.FC = () => {
 
   // Debounce search term to update URL Search Params
   useEffect(() => {
+    if (searchTerm === currentSearch) {
+      return;
+    }
+
     const handler = setTimeout(() => {
       setSearchParams((prev) => {
         const next = new URLSearchParams(prev);
@@ -61,7 +67,7 @@ export const AllTasks: React.FC = () => {
     }, 300);
 
     return () => clearTimeout(handler);
-  }, [searchTerm, setSearchParams]);
+  }, [searchTerm, currentSearch, setSearchParams]);
 
   // Query Hook
   const { data, isLoading, isError, error, refetch } = useAllTasks({
@@ -74,8 +80,37 @@ export const AllTasks: React.FC = () => {
     approved: currentApproved,
   });
 
+  const queryClient = useQueryClient();
   const tasks = data?.data || [];
   const meta = data?.meta || { total: 0, page: 1, limit: 10, pages: 1 };
+
+  // Prefetch next and previous pages for instantaneous page navigation
+  useEffect(() => {
+    const nextQueryParams = {
+      search: currentSearch || undefined,
+      status: currentApproved === 'true' ? undefined : (currentStatus || undefined),
+      priority: currentPriority || undefined,
+      sort: currentSort,
+      limit,
+      approved: currentApproved,
+    };
+
+    if (currentPage < meta.pages) {
+      queryClient.prefetchQuery({
+        queryKey: ['allTasks', { ...nextQueryParams, page: currentPage + 1 }],
+        queryFn: () => getAllTasks({ ...nextQueryParams, page: currentPage + 1 }),
+        staleTime: 1000 * 30,
+      });
+    }
+
+    if (currentPage > 1) {
+      queryClient.prefetchQuery({
+        queryKey: ['allTasks', { ...nextQueryParams, page: currentPage - 1 }],
+        queryFn: () => getAllTasks({ ...nextQueryParams, page: currentPage - 1 }),
+        staleTime: 1000 * 30,
+      });
+    }
+  }, [currentPage, meta.pages, currentSearch, currentStatus, currentPriority, currentSort, currentApproved, limit, queryClient]);
 
   // Filter handlers
   const handleStatusChange = (statusValue: string) => {
