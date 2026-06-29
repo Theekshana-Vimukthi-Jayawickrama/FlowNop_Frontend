@@ -13,6 +13,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, className = ''
     in_progress: { label: 'In Progress', variant: 'warning' },
     testing: { label: 'Testing', variant: 'primary' },
     done: { label: 'Done', variant: 'success' },
+    'Super Admin Approved': { label: 'Super Admin Approved', variant: 'success' },
   };
 
   const { label, variant } = mapping[status] || { label: status, variant: 'secondary' };

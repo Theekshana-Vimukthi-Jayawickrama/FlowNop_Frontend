@@ -297,6 +297,7 @@ export const AllTasks: React.FC = () => {
           onSortChange={handleSortChange}
           showCreatedBy={true}
           showAssignedTo={true}
+          showApprovedBy={currentApproved === 'true'}
           hideViewDetails={user?.role === 'user'}
         />
       )}

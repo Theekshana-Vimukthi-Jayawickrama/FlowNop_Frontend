@@ -12,6 +12,7 @@ interface TaskTableProps {
   onSortChange: (sort: string) => void;
   showCreatedBy?: boolean;
   showAssignedTo?: boolean;
+  showApprovedBy?: boolean;
   hideViewDetails?: boolean;
 }
 
@@ -21,6 +22,7 @@ export const TaskTable: React.FC<TaskTableProps> = ({
   onSortChange,
   showCreatedBy = false,
   showAssignedTo = false,
+  showApprovedBy = false,
   hideViewDetails = false,
 }) => {
   const handleSortClick = (field: string) => {
@@ -85,6 +87,11 @@ export const TaskTable: React.FC<TaskTableProps> = ({
                 Assigned To
               </th>
             )}
+            {showApprovedBy && (
+              <th className="p-4 text-xs font-bold text-text-muted uppercase tracking-wider">
+                Approved By
+              </th>
+            )}
             <th className="p-4 text-xs font-bold text-text-muted uppercase tracking-wider">
               Sub-Assigned
             </th>
@@ -146,6 +153,15 @@ export const TaskTable: React.FC<TaskTableProps> = ({
                       {task.assignedTo ? task.assignedTo.name : 'Unassigned'}
                     </span>
                   </div>
+                </td>
+              )}
+              
+              {/* Approved By */}
+              {showApprovedBy && (
+                <td className="p-4 text-text-main font-semibold">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-success/10 text-success border border-success/15">
+                    {task.approvedByAdmin || '—'}
+                  </span>
                 </td>
               )}
 

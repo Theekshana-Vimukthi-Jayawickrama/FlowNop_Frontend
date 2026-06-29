@@ -254,8 +254,9 @@ export const TaskDetail: React.FC = () => {
   const isAssignee = task.assignedTo?._id === user?._id;
   const isSubAssignee = task.subAssignedTo?.some((u) => u._id === user?._id);
 
-  // Only the admin/super admin who created the task can approve it
-  const showApproveButton = isAdmin && isCreator && task.status === 'done' && !task.approved;
+  const isSuperAdmin = user?.email?.toLowerCase() === 'superadminflownop@gmail.com';
+  // Only the responsible admin (creator) or the Super Admin are authorized to approve
+  const showApproveButton = isAdmin && (isCreator || isSuperAdmin) && task.status === 'done' && !task.approved;
 
   return (
     <div className="flex flex-col gap-6 max-w-4xl mx-auto">

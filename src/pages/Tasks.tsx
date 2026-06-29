@@ -338,6 +338,7 @@ export const Tasks: React.FC = () => {
           onSortChange={handleSortChange}
           showCreatedBy={isAdmin}
           showAssignedTo={isAdmin}
+          showApprovedBy={currentApproved === 'true'}
         />
       )}
 

@@ -72,7 +72,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({
     title: initialData?.title || '',
     description: initialData?.description || '',
     priority: initialData?.priority || 'medium',
-    status: initialData?.status || 'open',
+    status: (initialData?.status === 'Super Admin Approved' ? 'done' : initialData?.status) || 'open',
     dueDate: formatDate(initialData?.dueDate),
     assignedTo: initialData?.assignedTo?._id || (!user?.role || user.role !== 'admin' ? user?._id : '') || '',
     subAssignedTo: initialData?.subAssignedTo?.map((u) => u._id) || [],

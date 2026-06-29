@@ -1,7 +1,7 @@
 import type { IUser } from './user';
 
 export type TaskPriority = 'low' | 'medium' | 'high';
-export type TaskStatus = 'open' | 'in_progress' | 'testing' | 'done';
+export type TaskStatus = 'open' | 'in_progress' | 'testing' | 'done' | 'Super Admin Approved';
 
 export interface IStatusHistoryEntry {
   status: TaskStatus;
