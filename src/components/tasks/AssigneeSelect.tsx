@@ -31,8 +31,8 @@ export const AssigneeSelect: React.FC<AssigneeSelectProps> = ({
         setLoading(true);
         try {
           const data = await getUsers();
-          // Filter to only show users with role 'user' — tasks cannot be assigned to admins
-          const usersOnly = data.filter((u) => u.role === 'user');
+          // Filter to only show active users with role 'user' — tasks cannot be assigned to admins or disabled users
+          const usersOnly = data.filter((u) => u.role === 'user' && !u.isDisabled);
           setUsers(usersOnly);
           setFetchError(null);
         } catch (err: any) {

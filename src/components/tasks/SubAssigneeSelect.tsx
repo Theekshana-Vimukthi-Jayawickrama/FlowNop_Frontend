@@ -35,8 +35,8 @@ export const SubAssigneeSelect: React.FC<SubAssigneeSelectProps> = ({
         setLoading(true);
         try {
           const data = await getUsers();
-          // Only show users with role 'user'
-          const usersOnly = data.filter((u) => u.role === 'user');
+          // Only show active users with role 'user'
+          const usersOnly = data.filter((u) => u.role === 'user' && !u.isDisabled);
           setUsers(usersOnly);
           setFetchError(null);
         } catch (err: any) {
