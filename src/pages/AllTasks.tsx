@@ -5,7 +5,6 @@ import { useAllTasks } from '../features/tasks/useAllTasks';
 import { getAllTasks } from '../api/tasks';
 import TaskCard from '../components/tasks/TaskCard';
 import TaskTable from '../components/tasks/TaskTable';
-import { useAuth } from '../context/AuthContext';
 import TaskViewToggle from '../components/tasks/TaskViewToggle';
 import Spinner from '../components/ui/Spinner';
 import EmptyState from '../components/ui/EmptyState';
@@ -15,7 +14,6 @@ import Pagination from '../components/ui/Pagination';
 import { AlertCircle, Globe } from 'lucide-react';
 
 export const AllTasks: React.FC = () => {
-  const { user } = useAuth();
   
   // Local storage cache for view preference
   const [view, setView] = useState<'table' | 'cards'>(() => {
@@ -287,7 +285,7 @@ export const AllTasks: React.FC = () => {
       ) : view === 'cards' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {tasks.map((task) => (
-            <TaskCard key={task._id} task={task} hideViewDetails={user?.role === 'user'} />
+            <TaskCard key={task._id} task={task} hideViewDetails={true} />
           ))}
         </div>
       ) : (
