@@ -13,6 +13,7 @@ interface TaskTableProps {
   showCreatedBy?: boolean;
   showAssignedTo?: boolean;
   showApprovedBy?: boolean;
+  showDescription?: boolean;
   hideViewDetails?: boolean;
 }
 
@@ -23,6 +24,7 @@ export const TaskTable: React.FC<TaskTableProps> = ({
   showCreatedBy = false,
   showAssignedTo = false,
   showApprovedBy = false,
+  showDescription = false,
   hideViewDetails = false,
 }) => {
   const handleSortClick = (field: string) => {
@@ -77,6 +79,11 @@ export const TaskTable: React.FC<TaskTableProps> = ({
                 {renderSortIcon('priority')}
               </div>
             </th>
+            {showDescription && (
+              <th className="p-4 text-xs font-bold text-text-muted uppercase tracking-wider">
+                Description
+              </th>
+            )}
             {showCreatedBy && (
               <th className="p-4 text-xs font-bold text-text-muted uppercase tracking-wider">
                 Created By
@@ -131,6 +138,13 @@ export const TaskTable: React.FC<TaskTableProps> = ({
               <td className="p-4">
                 <PriorityBadge priority={task.priority} />
               </td>
+
+              {/* Description */}
+              {showDescription && (
+                <td className="p-4 text-text-muted max-w-[200px] truncate cursor-help" title={task.description}>
+                  {task.description || '—'}
+                </td>
+              )}
 
               {/* Created By */}
               {showCreatedBy && (

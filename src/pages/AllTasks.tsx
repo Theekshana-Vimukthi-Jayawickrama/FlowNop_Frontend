@@ -298,7 +298,8 @@ export const AllTasks: React.FC = () => {
           showCreatedBy={true}
           showAssignedTo={true}
           showApprovedBy={currentApproved === 'true'}
-          hideViewDetails={user?.role === 'user'}
+          showDescription={true}
+          hideViewDetails={true}
         />
       )}
 
