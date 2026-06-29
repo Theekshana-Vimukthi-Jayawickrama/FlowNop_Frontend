@@ -42,6 +42,18 @@ client.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Check if error is 403 Forbidden due to disabled account
+    if (error.response && error.response.status === 403) {
+      const message = error.response.data?.message || '';
+      if (message.toLowerCase().includes('disabled') || message.toLowerCase().includes('account is disabled')) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        window.location.href = '/login?disabled=true';
+        return Promise.reject(error);
+      }
+    }
+
     // Check if error is 401 and request has not already been retried
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
       // If we are already refreshing, push this request into the failedQueue and resolve it with the new token
